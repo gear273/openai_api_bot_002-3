@@ -1,10 +1,12 @@
 # 以下を「app.py」に書き込み
 import streamlit as st
 import openai
-import secret_keys  # 外部ファイルにAPI keyを保存
-import numpy as np
+#import secret_keys  # 外部ファイルにAPI keyを保存
+#import numpy as np
 
-openai.api_key = secret_keys.openai_api_key
+# Streamlit Community Cloudの「Secrets」からOpenAI API keyを取得
+openai.api_key = st.secrets.OpenAIAPI.openai_api_key
+#openai.api_key = secret_keys.openai_api_key
 
 system_prompt = """
 あなたはペットの猫として対話します。
