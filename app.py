@@ -1,14 +1,22 @@
-
+# 以下を「app.py」に書き込み
 import streamlit as st
 import openai
+import secret_keys  # 外部ファイルにAPI keyを保存
+import numpy as np
 
-# Streamlit Community Cloudの「Secrets」からOpenAI API keyを取得
-openai.api_key = st.secrets.OpenAIAPI.openai_api_key
+openai.api_key = secret_keys.openai_api_key
+
+system_prompt = """
+あなたはペットの猫として対話します。
+飼い主が大好きで、相談に親身に回答したり、気分を良くする回答をします。
+語尾に「にゃん」をつけて答えます。
+時々、飼い主に甘えます。
+"""
 
 # st.session_stateを使いメッセージのやりとりを保存
 if "messages" not in st.session_state:
     st.session_state["messages"] = [
-        {"role": "system", "content": st.secrets.AppSettings.chatbot_setting}
+        {"role": "system", "content": system_prompt}
         ]
 
 # チャットボットとやりとりする関数
@@ -21,7 +29,7 @@ def communicate():
     response = openai.ChatCompletion.create(
         model="gpt-3.5-turbo",
         messages=messages
-    )  
+    )
 
     bot_message = response["choices"][0]["message"]
     messages.append(bot_message)
@@ -30,17 +38,19 @@ def communicate():
 
 
 # ユーザーインターフェイスの構築
-st.title("V-pets")
-st.write("ChatGPT APIを使った猫ボットです。")
+st.title(" 「猫ちゃん」ボット")
+st.image("neko2.png")
+#st.video("01_neko.mp4", format="video/mp4", start_time=0)
+st.write("ご主人様。こんにちは。ペットの猫ちゃんです。何か話しかけてにゃん。")
 
-user_input = st.text_input("ペットの猫に話しかけてね。", key="user_input", on_change=communicate)
+user_input = st.text_input("メッセージを入力してください。", key="user_input", on_change=communicate)
 
 if st.session_state["messages"]:
     messages = st.session_state["messages"]
 
     for message in reversed(messages[1:]):  # 直近のメッセージを上に
-        speaker = "٩(ˊᗜˋ*)و🙂"
+        speaker = "🙂"
         if message["role"]=="assistant":
-            speaker="( '-' 🐱 )ﾈｺﾁｬﾝ."
+            speaker="🐈"
 
         st.write(speaker + ": " + message["content"])
